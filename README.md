@@ -20,7 +20,8 @@ getAllStudents():
 
 addStudent(first_name, last_name, email, enrollment_date): 
  - add a student to the db based on the provided parameters
- - executes a INSERT statment with the supplied values, 
+ - executes a INSERT statment with the supplied values
+
 updateStudentEmail(student_id, new_email):
  - add a student to the db based on the provided parameters
  - executes a UPDATE statment with the supplied values,
