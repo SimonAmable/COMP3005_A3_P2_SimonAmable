@@ -12,14 +12,14 @@ conn = psycopg2.connect(database="A3",
 cur = conn.cursor()
 
 # Execute a query
-def getAllStudents():
+def getAllStudents() -> str:   #select all students and return data
     # create SQL statement
 
     cur.execute("SELECT * FROM students")
     return cur.fetchall()
     #get alls tudent records from db
 
-def addStudent(f_name,l_name,email, enrollment_date):
+def addStudent(f_name,l_name,email, enrollment_date):   #add student 
     # create SQL statement
     query = "INSERT INTO students (first_name, last_name, email, enrollment_date) VALUES (%s, %s, %s, %s)"
     # Execute query with parameters
@@ -28,8 +28,8 @@ def addStudent(f_name,l_name,email, enrollment_date):
     print (f"{f_name},{l_name},{email},{enrollment_date}")
     conn.commit()
 
-def updateStudentEmail(s_id,new_email):
-        # create SQL statement
+def updateStudentEmail(s_id,new_email): #Update email by student_id
+    # create SQL statement
     query = f"UPDATE students SET email=%s WHERE student_id=%s"
     # Execute query with parameters
     cur.execute(query,(new_email,s_id))
@@ -38,7 +38,8 @@ def updateStudentEmail(s_id,new_email):
 
     print (f"updateStudentEmail: id={s_id}, new_email={new_email}")
 
-def deleteStudent(s_id):
+
+def deleteStudent(s_id):    #this is a DELETE by student_id
     # create SQL statement
     query = f"DELETE FROM students WHERE student_id=%s"
     # Execute query with parameters
@@ -50,35 +51,49 @@ def deleteStudent(s_id):
 
 
 
-# # Retrieve query results
-# #records = cur.fetchall()
+def format_data(data):
+    headers = ["ID", "first_name", "last_name", "Email", "enrollement_date"]
+    formatted_data = [headers]
+    for item in data:
+        formatted_item = [str(item[0]), item[1], item[2], item[3], item[4].strftime("%Y-%m-%d")]
+        formatted_data.append(formatted_item)
     
-# #updateStudentEmail(4,"adik@gmail.com")
-# deleteStudent(4)
+    # Find maximum width for each column
+    column_widths = [max(len(row[i]) for row in formatted_data) for i in range(len(headers))]
+    
+    # Format each row
+    formatted_table = ''
+    for row in formatted_data:
+        formatted_row = ''
+        for i, cell in enumerate(row):
+            formatted_row += cell.ljust(column_widths[i] + 2)  # Add 2 for padding
+        formatted_table += formatted_row.strip() + '\n'
 
-# print("getAllStudents: ")
-# print(getAllStudents())
-
-# # print("addStudent: ")
-# # addStudent("simon","amable","s@gmail.com","06/06/2022")
-# #updateStudentEmail(4,"adik@gmail.com")
-
-
+    return formatted_table
 
 #main runs a simple conditional loop for user testing.
 def main():
-    print("Please choose an option(0-4) from the menu provided , and then follow the promts")
 
 
-    choice = int (input ("""1. GetAllStudents()
+    choice = 1 #filler value / choice name declaration
+    while (choice > 0 ):
+        print("Please choose an option(0-4) from the menu provided , and then follow the promts")
+
+
+        choice_str = input ("""1. GetAllStudents()
 2. addStudent()
 3. updateStudentEmail()
 4. deleteStudent()
 0. Quit ()
-          """))
-    while (choice > 0 ):
+            """)
+        try:
+            choice=int(choice_str)
+        except:
+            print("you seem to have entered something incorrectly please try again!")
+            continue
+
         if (choice == 1):
-            print (getAllStudents())
+            print (format_data(getAllStudents()))
         elif (choice == 2):
             f_name=input ("Enter the first name:")
             l_name=input ("Enter the last name:")
@@ -90,10 +105,13 @@ def main():
             email=input ("Enter the new email:")
             updateStudentEmail(s_id,email)
         elif choice == 4:
+            s_id=input ("Enter the students id:")
             deleteStudent(s_id)
         elif choice == 0 :
             break
-        choice = int(input ("Please make another selection!"))
+        else:
+            print("you seem to have entered something incorrectly please try again")
+        #choice = int(input ("Please make another selection!"))
             
 
 

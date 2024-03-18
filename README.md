@@ -1,7 +1,8 @@
 Simon Amable
 101267294
 Asignment 3, part 1,  COMP3005
-
+Video demo:
+- https://youtu.be/2-onpMtvO8I
 
 Compilation instuctions:
 
